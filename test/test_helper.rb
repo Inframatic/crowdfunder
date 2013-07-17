@@ -1,7 +1,6 @@
-ENV["RAILS_ENV"] ||= "test"
+ENV["RAILS_ENV"] = "test" #Add || before = if this fails
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
-require 'minitest/pride'
 
 class ActiveSupport::TestCase
   ActiveRecord::Migration.check_pending!
@@ -18,4 +17,9 @@ end
 class ActionDispatch::IntergrationTest
 	include Capybara::DSL
 	Capybara.app= Crowdfunder::Application
+
+	teardown do
+		Capybara.reset_sessions!
+		Capybara.use_default_driver
+	end
 end
