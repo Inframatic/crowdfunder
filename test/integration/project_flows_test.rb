@@ -21,6 +21,9 @@ class ProjectFlowsTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end
+  click_link "Laser Gun"
+  assert_equal project_path(laser_gun), current_path
+  assert find('h1:first').has_content? laser_gun.title
   end
   test "navigation" do
 
