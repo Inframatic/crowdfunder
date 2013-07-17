@@ -17,9 +17,23 @@ end
 class ActionDispatch::IntergrationTest
 	include Capybara::DSL
 	Capybara.app= Crowdfunder::Application
+	Capybara.javascript_driver = :webkit
+
+	self.use_transactional_fixtures = false
 
 	teardown do
+		DatabaseCleaner.clean
 		Capybara.reset_sessions!
 		Capybara.use_default_driver
+	end
+
+	def setup_signed_in_user
+		pass = "this-is-a-password"
+		user = FactoryGirl.create :user, password: pass
+		visit '/sessions/new'
+
+		fill_in "email", with: user.email
+		fill_in "password", with: pass
+		click_button "Login"
 	end
 end

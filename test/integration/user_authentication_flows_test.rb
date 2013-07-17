@@ -37,4 +37,40 @@ require 'test_helper'
   # test "the truth" do
   #   assert true
   # end
+
+  test "successful log in" do
+    visit '/'
+    assert find('.navbar').has_no_link?('Logout')
+    # Calling the helper method here, and it returns a user
+    user = setup_signed_in_user
+    assert find('.navbar').has_link?('Logout')
+  end
+
+  test "unsuccessful log in" do
+    visit '/session/new'
+
+    fill_in "email", with: "a@b.com"
+    fill_in "password", with: "invalid creds"
+    click_button "Login"
+
+    assert_equal session_path, current_path
+
+    assert page.has_content?('Invalid')
+  end
+
+  test "successful logout" do
+    # javascript_driver can handle JS which we need for logout button, 
+    # since the button uses `method: delete` Rails UJS helper    
+    Capybara.current_driver = Capybara.javascript_driver
+
+    # Calling the helper method again
+    user = setup_signed_in_user
+
+    visit '/'
+
+    find('.navbar').click_link 'Logout'
+
+    assert page.has_content?("Bye")
+    assert find('.navbar').has_no_link?('Logout')
+   end
 end
