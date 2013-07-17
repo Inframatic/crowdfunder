@@ -26,7 +26,7 @@ class ProjectFlowsTest < ActionDispatch::IntegrationTest
   assert find('h1:first').has_content? laser_gun.title
   end
   test "navigation" do
-
+  	laser_gun = FactoryGirl.create(:project, :title => "Laser Gun")
   	#visit url root
   	visit "/"
   	assert_equal root_path, current_path
@@ -37,6 +37,9 @@ class ProjectFlowsTest < ActionDispatch::IntegrationTest
   	find('.navbar ul').click_link('Projects')
   	#Assert the page we're on is the projects page
   	assert_equal projects_path, current_path
+  	assert_equal "Projects", find('.navbar ul li.active a').text
+
+  	clink_link 'Laser Gun'
   	assert_equal "Projects", find('.navbar ul li.active a').text
   end 
 end
